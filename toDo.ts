@@ -22,9 +22,26 @@ document.addEventListener("DOMContentLoaded", () => {
         // TODO Suggestions how to fix type
         for (const selectEditButton of selectEditButtons) {
             selectEditButton.addEventListener("click", (event) => {
+                // console.log("Event Handler for Editing wird mehrmals aufgerufen");
                 event.preventDefault();
                 editToDo(selectEditButton);
             } )
+        }
+        const selectDoneButtons = document.getElementsByClassName("doneButton") as HTMLCollectionOf<HTMLTableCellElement>;
+        for (const selectDoneButtonElement of selectDoneButtons) {
+            selectDoneButtonElement.addEventListener("click", (event) => {
+                console.log("Event-Handler wird aufgerufen");
+                event.preventDefault();
+                changeToDoStatus(selectDoneButtonElement);
+                removeToDoFromTable(selectDoneButtonElement);
+                const selectDeleteButtons = document.getElementsByClassName("deleteButton") as HTMLCollectionOf<HTMLTableCellElement>;
+                for (const selectDeleteButton of selectDeleteButtons) {
+                    selectDeleteButton.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        removeToDoFromTable(selectDeleteButton);
+                    })
+                }
+            })
         }
     })
 })
@@ -71,7 +88,7 @@ function addToDoToTable() {
         // create buttons
         // done button
         const createDoneButton = document.createElement("button");
-        createDoneButton.className = "btn btn-success w-100";
+        createDoneButton.className = "btn btn-success w-100 doneButton";
         createDoneButton.textContent = "Done";
 
         // edit button
@@ -103,7 +120,7 @@ function resetToDoInputFieldAfterAddingToList() {
 
 
 
-function removeToDoFromTable(selectDeleteButton : any) {
+function removeToDoFromTable(selectDeleteButton : Element) {
     const selectClosestTableRow = selectDeleteButton.closest("tr");
     selectClosestTableRow.remove();
 }
@@ -128,4 +145,30 @@ function editToDo(selectEditButton: Element) {
         const toDoNameElement = selectEditButton.closest("tr").querySelector("#toDoName");
         toDoNameElement.textContent = selectClosestToDoValue;
     });
+}
+
+function changeToDoStatus(selectDoneButtonElement : Element) {
+    console.log("Methodenaufruf");
+    const select_tbodyFromDoneList = document.querySelector("table#doneList>tbody");
+
+    const createNewTableRow = document.createElement("tr");
+    select_tbodyFromDoneList.appendChild(createNewTableRow);
+
+    const selectFinishedToDoValue = selectDoneButtonElement.closest("tr").querySelector("#toDoName");
+    // console.log(selectFinishedToDoValue)
+    const createNewTableDataElement = document.createElement("td");
+    createNewTableRow.appendChild(createNewTableDataElement);
+    createNewTableDataElement.textContent = selectFinishedToDoValue.textContent;
+
+    const createNewTableDataElement2 = document.createElement("td");
+    createNewTableRow.appendChild(createNewTableDataElement2);
+    createNewTableDataElement2.textContent = "Done";
+
+
+    const createNewTableDateElement3 = document.createElement("td");
+    createNewTableRow.appendChild(createNewTableDateElement3);
+    const createDeleteButton = document.createElement("button");
+    createDeleteButton.className ="btn btn-danger w-100 deleteButton";
+    createDeleteButton.textContent = "Delete";
+    createNewTableDateElement3.appendChild(createDeleteButton);
 }

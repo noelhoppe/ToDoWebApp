@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(selectEditButtons);
         var _loop_2 = function (selectEditButton) {
             selectEditButton.addEventListener("click", function (event) {
+                // console.log("Event Handler for Editing wird mehrmals aufgerufen");
                 event.preventDefault();
                 editToDo(selectEditButton);
             });
@@ -33,6 +34,30 @@ document.addEventListener("DOMContentLoaded", function () {
         for (var _a = 0, selectEditButtons_1 = selectEditButtons; _a < selectEditButtons_1.length; _a++) {
             var selectEditButton = selectEditButtons_1[_a];
             _loop_2(selectEditButton);
+        }
+        var selectDoneButtons = document.getElementsByClassName("doneButton");
+        var _loop_3 = function (selectDoneButtonElement) {
+            selectDoneButtonElement.addEventListener("click", function (event) {
+                console.log("Event-Handler wird aufgerufen");
+                event.preventDefault();
+                changeToDoStatus(selectDoneButtonElement);
+                removeToDoFromTable(selectDoneButtonElement);
+                var selectDeleteButtons = document.getElementsByClassName("deleteButton");
+                var _loop_4 = function (selectDeleteButton) {
+                    selectDeleteButton.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        removeToDoFromTable(selectDeleteButton);
+                    });
+                };
+                for (var _i = 0, selectDeleteButtons_2 = selectDeleteButtons; _i < selectDeleteButtons_2.length; _i++) {
+                    var selectDeleteButton = selectDeleteButtons_2[_i];
+                    _loop_4(selectDeleteButton);
+                }
+            });
+        };
+        for (var _b = 0, selectDoneButtons_1 = selectDoneButtons; _b < selectDoneButtons_1.length; _b++) {
+            var selectDoneButtonElement = selectDoneButtons_1[_b];
+            _loop_3(selectDoneButtonElement);
         }
     });
 });
@@ -65,7 +90,7 @@ function addToDoToTable() {
         // create buttons
         // done button
         var createDoneButton = document.createElement("button");
-        createDoneButton.className = "btn btn-success w-100";
+        createDoneButton.className = "btn btn-success w-100 doneButton";
         createDoneButton.textContent = "Done";
         // edit button
         var createEditButton = document.createElement("button");
@@ -107,5 +132,25 @@ function editToDo(selectEditButton) {
         var toDoNameElement = selectEditButton.closest("tr").querySelector("#toDoName");
         toDoNameElement.textContent = selectClosestToDoValue;
     });
+}
+function changeToDoStatus(selectDoneButtonElement) {
+    console.log("Methodenaufruf");
+    var select_tbodyFromDoneList = document.querySelector("table#doneList>tbody");
+    var createNewTableRow = document.createElement("tr");
+    select_tbodyFromDoneList.appendChild(createNewTableRow);
+    var selectFinishedToDoValue = selectDoneButtonElement.closest("tr").querySelector("#toDoName");
+    // console.log(selectFinishedToDoValue)
+    var createNewTableDataElement = document.createElement("td");
+    createNewTableRow.appendChild(createNewTableDataElement);
+    createNewTableDataElement.textContent = selectFinishedToDoValue.textContent;
+    var createNewTableDataElement2 = document.createElement("td");
+    createNewTableRow.appendChild(createNewTableDataElement2);
+    createNewTableDataElement2.textContent = "Done";
+    var createNewTableDateElement3 = document.createElement("td");
+    createNewTableRow.appendChild(createNewTableDateElement3);
+    var createDeleteButton = document.createElement("button");
+    createDeleteButton.className = "btn btn-danger w-100 deleteButton";
+    createDeleteButton.textContent = "Delete";
+    createNewTableDateElement3.appendChild(createDeleteButton);
 }
 //# sourceMappingURL=toDo.js.map
